@@ -10,7 +10,6 @@ const ingredientsList = ref<
 const validationError = ref<boolean>(false);
 const validationErrorMessage = ref<string>('');
 const url = 'http://localhost:8000/recipe';
-const message = ref<string>('');
 
 async function postNewIngredient(url: string, method: string, body: FormData) {
   try {
@@ -87,7 +86,6 @@ getIngredients();
 <template>
   <div v-if="loader" class="loader">Please wait.</div>
   <header v-if="!loader">
-    <div>{{ message }}</div>
     <img class="picture" src="../assets/salad.jpg" alt="Salad" />
     <h1 class="main-title">Salad</h1>
     <p class="description">Delicious flavored salad !</p>
