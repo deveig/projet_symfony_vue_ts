@@ -1,90 +1,172 @@
-<script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+<script lang="ts">
+import axios from 'axios';
+import { AxiosError } from 'axios';
 import ListIngredient from './ListIngredient.vue';
-import { loadRouteLocation, useRoute, useRouter } from 'vue-router';
 
-const loader = ref<boolean>(true);
-const ingredientsList = ref<
-  Array<{ id: number; ingredient: string; quantity: number; unit: string }>
->([]);
-const validationError = ref<boolean>(false);
-const validationErrorMessage = ref<string>('');
-const url = 'http://localhost:8000/recipe';
+export default {
+  data() {
+    return {
+      loader: true,
+      ingredientsList: [] as Array<{
+        id: number;
+        ingredient: string;
+        quantity: number;
+        unit: string;
+      }>,
+      error: false,
+      errorMessage: '',
+      url: 'http://localhost:8000/recipe',
+      name: '',
+      quantity: '',
+      metric: ''
+    };
+  },
 
-async function postNewIngredient(url: string, method: string, body: FormData) {
-  try {
-    const response = await fetch(url, { method: method, body: body });
-    if (response.ok) {
-      window.location.reload();
-    }
-  } catch (error) {
-    validationError.value = true;
-    validationErrorMessage.value = 'Internal Server Error, please, retry your demand.';
-  }
-}
-
-async function validateData(event: Event) {
-  const isNumber = new RegExp(/\d+/);
-  const isString = new RegExp(/\D+/);
-  const isNotEqualToZero = new RegExp(/[^0]/);
-  const isNegativeNumber = new RegExp(/-\d+/);
-  const ingredient: FormData = new FormData();
-  const form = event.target! as HTMLFormElement;
-  const elementName = form.elements[2] as HTMLInputElement;
-  const newIngredientName = elementName.value;
-  const elementQuantity = form.elements[3] as HTMLInputElement;
-  const newIngredientQuantity = elementQuantity.value;
-  const elementMetric = form.elements[4] as HTMLInputElement;
-  const newIngredientMetric = elementMetric.value;
-  ingredient.append('ingredient', newIngredientName);
-  ingredient.append('quantity', newIngredientQuantity);
-  ingredient.append('unit', newIngredientMetric);
-  // Checks content of each field.
-  if (newIngredientName !== '' && newIngredientQuantity !== '' && newIngredientMetric !== '') {
-    if (newIngredientName.length <= 25 && !isNumber.test(newIngredientName)) {
-      if (
-        !isString.test(newIngredientQuantity) &&
-        isNotEqualToZero.test(newIngredientQuantity) &&
-        !isNegativeNumber.test(newIngredientQuantity)
-      ) {
-        if (newIngredientMetric.length <= 10 && !isNumber.test(newIngredientMetric)) {
-          postNewIngredient(url, 'POST', ingredient);
-        } else {
-          validationError.value = true;
-          validationErrorMessage.value = 'Metric is a short word.';
-        }
-      } else {
-        validationError.value = true;
-        validationErrorMessage.value = 'Quantity is a positive number.';
+  methods: {
+    async get() {
+      const response = await axios({ method: 'get', url: this.url });
+      if (response.status === 200) {
+        return response.data;
       }
-    } else {
-      validationError.value = true;
-      validationErrorMessage.value = 'Name is a short word.';
+    },
+    async getIngredients() {
+      try {
+        const ingredients = await this.get();
+        if (ingredients) {
+          this.ingredientsList = ingredients;
+          this.loader = false;
+        }
+      } catch (error) {
+        this.errorMessage = 'Internal Server Error, please, retry your demand.';
+        this.error = true;
+        this.loader = false;
+      }
+    },
+    async save(name: string, quantity: string, metric: string) {
+      const ingredient = new FormData();
+      ingredient.append('ingredient', name);
+      ingredient.append('quantity', quantity);
+      ingredient.append('unit', metric);
+      const response = await axios({
+        method: 'post',
+        url: this.url,
+        data: ingredient
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    },
+    async validateData() {
+      try {
+        const isNumber = new RegExp(/\d+/);
+        const isString = new RegExp(/\D+/);
+        const isNotEqualToZero = new RegExp(/[^0]/);
+        const isNegativeNumber = new RegExp(/-\d+/);
+        const newIngredientName = this.name;
+        const newIngredientQuantity = this.quantity;
+        const newIngredientMetric = this.metric;
+        // Checks content of each field.
+        if (
+          newIngredientName !== '' &&
+          newIngredientQuantity !== '' &&
+          newIngredientMetric !== ''
+        ) {
+          if (newIngredientName.length <= 25 && !isNumber.test(newIngredientName)) {
+            if (
+              !isString.test(newIngredientQuantity) &&
+              isNotEqualToZero.test(newIngredientQuantity) &&
+              !isNegativeNumber.test(newIngredientQuantity)
+            ) {
+              if (newIngredientMetric.length <= 10 && !isNumber.test(newIngredientMetric)) {
+                this.loader = true;
+                this.errorMessage = '';
+                this.error = false;
+                const message = await this.save(
+                  newIngredientName,
+                  newIngredientQuantity,
+                  newIngredientMetric
+                );
+                if (message) {
+                  this.$emit('saveData');
+                  this.getIngredients();
+                }
+              } else {
+                this.errorMessage = 'Metric is a short word.';
+                this.error = true;
+              }
+            } else {
+              this.errorMessage = 'Quantity is a positive number.';
+              this.error = true;
+            }
+          } else {
+            this.errorMessage = 'Name is a short word.';
+            this.error = true;
+          }
+        } else {
+          this.errorMessage = 'All fields are required.';
+          this.error = true;
+        }
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        const axiosErrorResponseMessage = axiosError!.response!.data! as {
+          message: string;
+        };
+        if (axiosErrorResponseMessage.message === 'Invalid data.') {
+          this.errorMessage = 'Invalid data.';
+          this.error = true;
+          this.loader = false;
+        } else {
+          this.errorMessage = 'Internal Server Error, please, retry your demand.';
+          this.error = true;
+          this.loader = false;
+        }
+      }
+    },
+    async delete() {
+      const response = await axios({ method: 'get', url: `${this.url}/delete` });
+      if (response.status === 200) {
+        return response.data;
+      }
+    },
+    async deleteData() {
+      try {
+        this.loader = true;
+        this.errorMessage = '';
+        this.error = false;
+        const message = await this.delete();
+        if (message) {
+          this.$emit('removeData');
+          this.getIngredients();
+        }
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        const axiosErrorResponseMessage = axiosError!.response!.data! as {
+          message: string;
+        };
+        if (axiosErrorResponseMessage.message === 'No ingredient to remove.') {
+          this.errorMessage = 'No ingredient to remove.';
+          this.error = true;
+          this.loader = false;
+        } else {
+          this.errorMessage = 'Internal Server Error, please, retry your demand.';
+          this.error = true;
+          this.loader = false;
+        }
+      }
     }
-  } else {
-    validationError.value = true;
-    validationErrorMessage.value = 'All fields are required.';
-  }
-}
+  },
+  components: {
+    ListIngredient
+  },
 
-async function getIngredients() {
-  try {
-    const response = await fetch(url);
-    if (response.ok) {
-      ingredientsList.value = await response.json();
-      loader.value = false;
-    }
-  } catch (error) {
-    validationError.value = true;
-    validationErrorMessage.value = 'Internal Server Error, please, retry your demand.';
+  mounted() {
+    this.getIngredients();
   }
-}
-
-getIngredients();
+};
 </script>
 
 <template>
-  <div v-if="loader" class="loader">Please wait.</div>
+  <div v-if="loader" class="loader">Please wait...</div>
   <header v-if="!loader">
     <img class="picture" src="../assets/salad.jpg" alt="Salad" />
     <h1 class="main-title">Salad</h1>
@@ -119,7 +201,9 @@ getIngredients();
       <form method="post" action="" @submit.prevent="validateData">
         <div class="item-handler">
           Servings:
-          <button type="button" class="less-item" name="minus" value="minus">-</button>
+          <button type="button" class="less-item" name="minus" value="minus" @click="deleteData">
+            -
+          </button>
           <span>{{ ingredientsList.length }}</span>
           <button type="submit" class="more-item" name="plus" value="plus">+</button>
         </div>
@@ -138,17 +222,17 @@ getIngredients();
             <tr>
               <td></td>
               <td>
-                <input id="name" name="name" required />
+                <input id="name" name="name" required v-model="name" />
               </td>
               <td>
-                <input id="quantity" name="quantity" required />
+                <input id="quantity" name="quantity" required v-model="quantity" />
               </td>
               <td>
-                <input id="metric" name="metric" required />
+                <input id="metric" name="metric" required v-model="metric" />
               </td>
             </tr>
-            <tr class="warning" v-if="validationError">
-              <td colspan="4">{{ validationErrorMessage }}</td>
+            <tr class="warning" v-if="error">
+              <td colspan="4">{{ errorMessage }}</td>
             </tr>
           </thead>
           <tbody>
