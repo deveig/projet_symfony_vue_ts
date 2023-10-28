@@ -12,6 +12,7 @@ Move to the folder of the front-end with command line `cd frontend`.
 Run front-end by following './frontend/README.md' file. 
 Then move to the folder of the back-end with command line `cd backend`.
 Run back-end by following './backend/README.md' file.
+Open browser and search for `http://localhost:5173/recipe`.
 
 ## Run tests
 
