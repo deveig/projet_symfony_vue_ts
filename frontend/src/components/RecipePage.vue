@@ -169,43 +169,56 @@ export default {
   <div v-if="loader" class="loader">Please wait...</div>
   <header v-if="!loader">
     <img class="picture" src="../assets/salad.jpg" alt="Salad" />
-    <h1 class="main-title">Salad</h1>
-    <p class="description">Delicious flavored salad !</p>
+    <div>
+        <h1 class="main-title">Salad</h1>
+        <p class="description">Delicious flavored salad !</p>
+    </div>
   </header>
   <main v-if="!loader">
     <section>
       <h2 class="subtitle">Overview</h2>
       <dl class="features">
-        <dt class="feature-picture">
-          <div class="rate">
-            <i class="fa-solid fa-star fa-2xs"></i>
-            <i class="fa-solid fa-star fa-2xs"></i>
-            <i class="fa-solid fa-star-half-stroke fa-2xs"></i>
-            <i class="fa-regular fa-star fa-2xs"></i>
-            <i class="fa-regular fa-star fa-2xs"></i>
-          </div>
-        </dt>
-        <dd class="feature">Difficulty</dd>
-        <dt class="feature-picture feature-picture-decoration">7€</dt>
-        <dd class="feature">Cost</dd>
-        <dt class="feature-picture feature-picture-decoration">45min</dt>
-        <dd class="feature">Preparation time</dd>
-        <dt class="feature-picture feature-picture-decoration">0min</dt>
-        <dd class="feature">Cooking time</dd>
-        <dt class="feature-picture feature-picture-decoration">20min</dt>
-        <dd class="feature">Resting time</dd>
+        <div>
+          <dt class="feature-picture">
+            <div class="rate">
+              <i class="fa-solid fa-star fa-2xs"></i>
+              <i class="fa-solid fa-star fa-2xs"></i>
+              <i class="fa-solid fa-star-half-stroke fa-2xs"></i>
+              <i class="fa-regular fa-star fa-2xs"></i>
+              <i class="fa-regular fa-star fa-2xs"></i>
+            </div>
+          </dt>
+          <dd class="feature">Difficulty</dd>
+        </div>
+        <div>
+          <dt class="feature-picture feature-picture-decoration">7€</dt>
+          <dd class="feature">Cost</dd>
+        </div>
+        <div>
+          <dt class="feature-picture feature-picture-decoration">45min</dt>
+          <dd class="feature">Preparation time</dd>
+        </div>
+        <div>
+          <dt class="feature-picture feature-picture-decoration">0min</dt>
+          <dd class="feature">Cooking time</dd>
+        </div>
+        <div>
+          <dt class="feature-picture feature-picture-decoration">20min</dt>
+          <dd class="feature">Resting time</dd>
+        </div>
       </dl>
     </section>
     <section>
       <h2 class="subtitle">Ingredients</h2>
       <form method="post" action="" @submit.prevent="validateData">
         <div class="item-handler">
-          Servings:
-          <button type="button" class="less-item" name="minus" value="minus" @click="deleteData">
-            -
-          </button>
-          <span>{{ ingredientsList.length }}</span>
-          <button type="submit" class="more-item" name="plus" value="plus">+</button>
+          <span>Servings: <span>{{ ingredientsList.length }}</span></span>
+          <div>
+            <button type="submit" class="more-item" name="plus" value="plus">+</button>
+            <button type="button" class="less-item" name="minus" value="minus" @click="deleteData">
+              -
+            </button>
+          </div>
         </div>
         <table>
           <caption class="table-legend">
@@ -214,20 +227,20 @@ export default {
           </caption>
           <thead>
             <tr>
-              <th>#</th>
-              <th><label for="name">Name</label></th>
-              <th><label for="quantity">Quantity</label></th>
-              <th><label for="metric">Metric</label></th>
+              <th class="item-datas item-number">N°</th>
+              <th class="item-datas"><label for="name">Name</label></th>
+              <th class="item-datas"><label for="quantity">Quantity</label></th>
+              <th class="item-datas"><label for="metric">Metric</label></th>
             </tr>
             <tr>
               <td></td>
-              <td>
+              <td class="item-datas">
                 <input id="name" name="name" required v-model="name" />
               </td>
-              <td>
+              <td class="item-datas">
                 <input id="quantity" name="quantity" required v-model="quantity" />
               </td>
-              <td>
+              <td class="item-datas">
                 <input id="metric" name="metric" required v-model="metric" />
               </td>
             </tr>

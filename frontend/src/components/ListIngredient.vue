@@ -12,9 +12,9 @@ export default defineComponent({
 </script>
 <template>
   <tr>
-    <td>{{ index }}</td>
-    <td>{{ ingredient }}</td>
-    <td>{{ quantity }}</td>
-    <td>{{ unit }}</td>
+    <td class="item-datas item-number">{{ index }}</td>
+    <td class="item-datas">{{ ingredient }}</td>
+    <td class="item-datas">{{ quantity }}</td>
+    <td class="item-datas">{{ unit }}</td>
   </tr>
 </template>
