@@ -68,6 +68,7 @@ class RecipeController extends AbstractController
         }
     }
 
+    // Removes the last ingredient if there is one.
     #[Route('/recipe/delete', methods: ['GET'])]
     public function deleteIngredient(IngredientRepository $ingredientRepository): JsonResponse
     {

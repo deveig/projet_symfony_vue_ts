@@ -53,7 +53,6 @@ npm run lint
 
 Install npm packages with command line `npm install`.
 Run `npm run dev` to run application.
-Open browser and search for `http://localhost:5173/recipe`.
 
 ## Run tests
 
