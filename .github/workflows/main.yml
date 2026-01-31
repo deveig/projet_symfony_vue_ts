@@ -10,7 +10,11 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
-      - name: Install dependencies
-        uses: php-actions/composer@v6
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
         with:
-          command: composer install
+          php-version: '8.5'
+          tools: phpunit, composer
+          extensions: zip
+      - name: Install dependancies
+        run: composer install
