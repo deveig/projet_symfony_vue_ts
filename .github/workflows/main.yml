@@ -1,7 +1,7 @@
 name: VueJS/Symfony app
 on: [push]
 jobs:
-  check-code:
+  backend-check-code:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,4 +30,20 @@ jobs:
           php bin/console --env=test doctrine:schema:create
           php bin/console --env=test -n doctrine:fixtures:load
           php bin/phpunit tests/Controller/RecipeControllerTest.php
+  frontend-check-code:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
         
