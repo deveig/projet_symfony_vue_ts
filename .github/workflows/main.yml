@@ -1,0 +1,16 @@
+name: VueJS/Symfony app
+on: [push]
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./backend
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          command: composer install
