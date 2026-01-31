@@ -25,3 +25,5 @@ Run tests of the front-end by following './frontend/README.md' file.
 
 Move to the folder of the back-end with command line `cd backend`.
 Run tests of the back-end by following './backend/README.md' file.
+
+## Workflow GitHub Actions
