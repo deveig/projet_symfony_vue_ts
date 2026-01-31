@@ -18,3 +18,17 @@ jobs:
           extensions: zip
       - name: Install dependancies
         run: composer install
+      - name: Create Database
+        run: |
+          mkdir -p data
+          touch data/database.sqlite
+      #- name: Prepare database to test
+        #run: |
+          #php bin/console --env=test doctrine:database:create
+          #php bin/console --env=test doctrine:schema:create
+          #php bin/console --env=test -n doctrine:fixtures:load
+      - name: Run tests
+        env:
+          DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+        run: php bin/phpunit tests/Controller/RecipeControllerTest.php
+        
