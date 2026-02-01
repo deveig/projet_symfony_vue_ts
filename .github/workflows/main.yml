@@ -32,10 +32,6 @@ jobs:
           php bin/phpunit tests/Controller/RecipeControllerTest.php
   backend-docker:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./backend
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -51,7 +47,7 @@ jobs:
         with:
           push: true
           tags: doc12mp/mysql_app:symfony_app
-          #context: ./backend
+          context: .
           build-args: |
             DB_APP_SECRET=${{ secrets.DB_APP_SECRET }}
             DB_URL=${{ secrets.DB_URL }}
@@ -61,13 +57,9 @@ jobs:
         with:
           push: true
           tags: doc12mp/mysql_app:symfony_nginx
-          #context: ./backend/nginx
+          context: ./nginx
   frontend-check-code:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./frontend
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
@@ -100,4 +92,4 @@ jobs:
         with:
           push: true
           tags: doc12mp/mysql_app:vue_app
-          #context: ./frontend
+          context: ./frontend
