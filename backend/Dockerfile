@@ -17,7 +17,7 @@ RUN mv composer.phar /usr/local/bin/composer
 WORKDIR /var/www/
 RUN mkdir project
 WORKDIR /var/www/project/
-COPY [--exclude=nginx] . .
+COPY --exclude=nginx . .
 RUN echo "APP_SECRET=$DB_APP_SECRET" > .env
 RUN echo "DATABASE_URL=$DB_URL" >> .env
 RUN echo "MESSENGER_TRANSPORT_DSN=$DB_MESSENGER" >> .env

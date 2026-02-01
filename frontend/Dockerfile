@@ -2,7 +2,7 @@ FROM node:latest as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-COPY ./ .
+COPY --exclude=nginx ./ .
 RUN npm run build
 
 FROM nginx as production-stage
