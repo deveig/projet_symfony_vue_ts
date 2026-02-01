@@ -47,7 +47,7 @@ jobs:
         with:
           push: true
           tags: doc12mp/mysql_app:symfony_app
-          file: ./backend
+          file: ./backend/Dockerfile
           build-args: |
             DB_APP_SECRET=${{ secrets.DB_APP_SECRET }}
             DB_URL=${{ secrets.DB_URL }}
@@ -57,7 +57,7 @@ jobs:
         with:
           push: true
           tags: doc12mp/mysql_app:symfony_nginx
-          file: ./backend/nginx
+          file: ./backend/nginx/Dockerfile
   frontend-check-code:
     runs-on: ubuntu-latest
     defaults:
@@ -92,4 +92,4 @@ jobs:
         with:
           push: true
           tags: doc12mp/mysql_app:vue_app
-          file: ./frontend
+          file: ./frontend/Dockerfile
