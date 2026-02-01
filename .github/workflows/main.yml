@@ -30,6 +30,32 @@ jobs:
           php bin/console --env=test doctrine:schema:create
           php bin/console --env=test -n doctrine:fixtures:load
           php bin/phpunit tests/Controller/RecipeControllerTest.php
+  backend-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Build x
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push app
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: doc12mp/mysql_app:symfony_app
+          build-args: |
+            DB_APP_SECRET=${{ secrets.DB_APP_SECRET }}
+            DB_URL=${{ secrets.DB_URL }}
+            DB_MESSENGER=${{ secrets.DB_MESSENGER }}
+      - name: Build and push nginx proxy
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: doc12mp/mysql_app:symfony_nginx
   frontend-check-code:
     runs-on: ubuntu-latest
     defaults:
@@ -47,4 +73,20 @@ jobs:
       - run: npm install
       - run: npm run build --if-present
       - run: npm run test:unit
-        
+  frontend-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Build x
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: doc12mp/mysql_app:vue_app
