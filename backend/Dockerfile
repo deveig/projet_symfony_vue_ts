@@ -14,9 +14,6 @@ RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'c8b085408188070d5
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
-RUN apk add --no-cache bash
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash 
-RUN apk add symfony-cli
 WORKDIR /var/www/
 RUN mkdir project
 WORKDIR /var/www/project/
@@ -24,7 +21,7 @@ COPY . .
 RUN echo "APP_SECRET=$DB_APP_SECRET" > .env
 RUN echo "DATABASE_URL=$DB_URL" >> .env
 RUN echo "MESSENGER_TRANSPORT_DSN=$DB_MESSENGER" >> .env
-RUN symfony check:requirements
+RUN composer require symfony/requirements-checker
 RUN composer dump-env prod
 RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
 CMD ["php-fpm"]
