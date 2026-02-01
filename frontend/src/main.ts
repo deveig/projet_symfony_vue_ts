@@ -6,7 +6,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import RecipePage from './components/RecipePage.vue';
 
-const route = [{ path: '/recipe', component: RecipePage }];
+const route = [{ path: '/', component: RecipePage }];
 const router = createRouter({ history: createWebHistory(), routes: route });
 
 const app = createApp(App);
