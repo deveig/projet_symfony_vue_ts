@@ -14,6 +14,7 @@ RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'c8b085408188070d5
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
+RUN curl -sS https://get.symfony.com/cli/installer | bash
 WORKDIR /var/www/
 RUN mkdir project
 WORKDIR /var/www/project/
@@ -21,7 +22,7 @@ COPY . .
 RUN echo "APP_SECRET=$DB_APP_SECRET" > .env
 RUN echo "DATABASE_URL=$DB_URL" >> .env
 RUN echo "MESSENGER_TRANSPORT_DSN=$DB_MESSENGER" >> .env
-RUN composer require symfony/requirements-checker
+RUN symfony check:requirements
 RUN composer dump-env prod
 RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
 CMD ["php-fpm"]
