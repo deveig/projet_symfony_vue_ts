@@ -7,6 +7,7 @@ ENV DB_URL=$DB_URL
 ENV DB_MESSENGER=$DB_MESSENGER
 WORKDIR /usr/local/etc/php/
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+WORKDIR /bin/
 RUN apk add curl
 RUN ( curl -sSLf https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - || echo 'return 1' ) | sh -s \ pdo_mysql
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -14,7 +15,7 @@ RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'c8b085408188070d5
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
-RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash && apt install symfony-cli
 WORKDIR /var/www/
 RUN mkdir project
 WORKDIR /var/www/project/
