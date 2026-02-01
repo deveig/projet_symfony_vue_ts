@@ -15,7 +15,7 @@ RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'c8b085408188070d5
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash && apt install symfony-cli
+RUN apk add --no-cache bash && curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' && apk add symfony-cli
 WORKDIR /var/www/
 RUN mkdir project
 WORKDIR /var/www/project/
