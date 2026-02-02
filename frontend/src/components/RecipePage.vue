@@ -15,7 +15,7 @@ export default {
       }>,
       error: false,
       errorMessage: '',
-      url: 'http://localhost:8000/recipe',
+      url: 'http://nginx-back:8080/recipe',
       name: '',
       quantity: '',
       metric: ''
