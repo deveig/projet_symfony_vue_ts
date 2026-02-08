@@ -93,3 +93,9 @@ jobs:
           push: true
           tags: doc12mp/mysql_app:vue_app
           context: "{{defaultContext}}:frontend"
+      - name: Build and push nginx proxy
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: doc12mp/mysql_app:vue_nginx
+          context: "{{defaultContext}}:frontend/nginx"
