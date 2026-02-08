@@ -15,7 +15,7 @@ export default {
       }>,
       error: false,
       errorMessage: '',
-      url: 'http://nginx-back:8080/recipe',
+      url: '/recipe',
       name: '',
       quantity: '',
       metric: ''
@@ -81,6 +81,9 @@ export default {
                 this.loader = true;
                 this.errorMessage = '';
                 this.error = false;
+                this.name = '';
+                this.quantity = '';
+                this.metric = '';
                 const message = await this.save(
                   newIngredientName,
                   newIngredientQuantity,

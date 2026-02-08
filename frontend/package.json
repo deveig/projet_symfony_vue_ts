@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check build-only",
-    "preview": "vite preview",
+    "dev": "node server.ts",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --outDir dist/client --base ./",
+    "build:server": "vite build --ssr src/entry-server.ts --outDir dist/server",
+    "preview": "cross-env NODE_ENV=production node server.ts",
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
@@ -14,6 +16,11 @@
   },
   "dependencies": {
     "axios": "^1.6.0",
+    "compression": "^1.8.1",
+    "cross-env": "^10.1.0",
+    "express": "^5.2.1",
+    "fs.promises": "^0.1.2",
+    "sirv": "^3.0.2",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },
