@@ -35,11 +35,11 @@ app.use('/recipe', async (req, res) => {
 
     // Forward status, headers and body
     res.status(response.status);
-    Object.entries(response.headers).forEach(([k, v]) => {
-      try {
-        res.setHeader(k, v as string);
-      } catch {}
-    });
+    // Object.entries(response.headers).forEach(([k, v]) => {
+    //   try {
+    //     res.setHeader(k, v as string);
+    //   } catch {}
+    // });
     res.send(response.data);
   } catch (err: any) {
     const status = err.response?.status || 500;
