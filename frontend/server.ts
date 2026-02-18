@@ -1,21 +1,25 @@
-import fs from 'node:fs/promises'
-import express from 'express'
-import https from 'https'
-import axios from 'axios'
+import fs from 'node:fs/promises';
+import express from 'express';
+import https from 'https';
+import axios from 'axios';
+import tls from 'tls';
 
 // Constants
-const isProduction = process.env.NODE_ENV === 'production'
-const port = process.env.PORT || 5173
+const isProduction = process.env.NODE_ENV === 'production';
+const port = process.env.PORT || 5173;
 // const port = 443;
-const base = process.env.BASE || '/'
+const base = process.env.BASE || '/';
 
 // Cached production assets
-const templateHtml = isProduction
-  ? await fs.readFile('./dist/client/index.html', 'utf-8')
-  : ''
+const templateHtml = isProduction ? await fs.readFile('./dist/client/index.html', 'utf-8') : '';
+
+// Ensure Node.js trusts the self-signed certificate for backend communication
+const currentCerts = (tls as any).getCACertificates('default');
+const systemCerts = (tls as any).getCACertificates('system');
+(tls as any).setDefaultCACertificates([...currentCerts, ...systemCerts]);
 
 // Create http server
-const app = express()
+const app = express();
 
 // Proxy /recipe requests to the Symfony backend, forwarding raw body and headers.
 app.use('/recipe', express.raw({ type: '*/*', limit: '10mb' }));
@@ -24,7 +28,6 @@ app.use('/recipe', async (req, res) => {
     const backendUrl = `https://nginx-back${req.originalUrl}`;
     const headers = { ...req.headers };
     delete headers.host;
-
     const response = await axios({
       method: req.method as any,
       url: backendUrl,
@@ -51,60 +54,57 @@ app.use('/recipe', async (req, res) => {
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
-let vite
+let vite;
 if (!isProduction) {
-  const { createServer } = await import('vite')
+  const { createServer } = await import('vite');
   vite = await createServer({
     server: { middlewareMode: true },
     appType: 'custom',
-    base,
-  })
-  app.use(vite.middlewares)
+    base
+  });
+  app.use(vite.middlewares);
 } else {
-  const compression = (await import('compression')).default
-  const sirv = (await import('sirv')).default
-  app.use(compression())
-  app.use(base, sirv('./dist/client', { extensions: [] }))
+  const compression = (await import('compression')).default;
+  const sirv = (await import('sirv')).default;
+  app.use(compression());
+  app.use(base, sirv('./dist/client', { extensions: [] }));
 }
 
 // Serve HTML
 app.use('*all', async (req, res) => {
   try {
-    const url = req.originalUrl.replace(base, '')
+    const url = req.originalUrl.replace(base, '');
 
     /** @type {string} */
-    let template
+    let template;
     /** @type {import('./src/entry-server.ts').render} */
-    let render
+    let render;
     if (!isProduction) {
       // Always read fresh template in development
-      template = await fs.readFile('./index.html', 'utf-8')
-      template = await vite.transformIndexHtml(url, template)
-      render = (await vite.ssrLoadModule('/src/entry-server.ts')).render
+      template = await fs.readFile('./index.html', 'utf-8');
+      template = await vite.transformIndexHtml(url, template);
+      render = (await vite.ssrLoadModule('/src/entry-server.ts')).render;
     } else {
-      template = templateHtml
-      render = (await import('./dist/server/entry-server.js')).render
+      template = templateHtml;
+      render = (await import('./dist/server/entry-server.js')).render;
     }
 
-    const rendered = await render(url)
+    const rendered = await render(url);
 
     const html = template
       .replace(`<!--app-head-->`, rendered.head ?? '')
-      .replace(`<!--app-html-->`, rendered.html ?? '')
+      .replace(`<!--app-html-->`, rendered.html ?? '');
 
-    res.status(200).set({ 'Content-Type': 'text/html' }).send(html)
+    res.status(200).set({ 'Content-Type': 'text/html' }).send(html);
   } catch (e) {
-    vite?.ssrFixStacktrace(e)
-    console.log(e.stack)
-    res.status(500).end(e.stack)
+    vite?.ssrFixStacktrace(e);
+    console.log(e.stack);
+    res.status(500).end(e.stack);
   }
-})
+});
 
 // Start http server
-app.listen(port, () => {
-// https.createServer({
-//   key: await fs.readFile('/etc/ssl/private/app.key'),
-//   cert: await fs.readFile('/etc/ssl/certs/app.crt')
-// }, app).listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`)
-})
+// app.listen(port, () => {
+  https.createServer(app).listen(port, () => {
+  console.log(`Server started at https://localhost:${port}`);
+});
