@@ -1,8 +1,7 @@
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import express from 'express';
 import https from 'https';
 import axios from 'axios';
-import tls from 'tls';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production';
@@ -12,11 +11,6 @@ const base = process.env.BASE || '/';
 
 // Cached production assets
 const templateHtml = isProduction ? await fs.readFile('./dist/client/index.html', 'utf-8') : '';
-
-// Ensure Node.js trusts the self-signed certificate for backend communication
-const currentCerts = (tls as any).getCACertificates('default');
-const systemCerts = (tls as any).getCACertificates('system');
-(tls as any).setDefaultCACertificates([...currentCerts, ...systemCerts]);
 
 // Create http server
 const app = express();
@@ -28,12 +22,11 @@ app.use('/recipe', async (req, res) => {
     const backendUrl = `https://nginx-back${req.originalUrl}`;
     const headers = { ...req.headers };
     delete headers.host;
-    fs.readFile('/etc/ssl/certs/app.crt', 'utf-8');
     const response = await axios({
       method: req.method as any,
       url: backendUrl,
       data: req.body,
-      headers,
+      headers: headers,
       withCredentials: true,
       responseType: 'arraybuffer',
       validateStatus: () => true
@@ -109,8 +102,8 @@ app.use('*all', async (req, res) => {
 https
   .createServer(
     {
-      cert: await fs.readFile('/etc/ssl/certs/app.crt', 'utf-8'),
-      key: await fs.readFile('/etc/ssl/private/app.key', 'utf-8')
+      cert: fs.readFileSync('/etc/ssl/certs/app.crt'),
+      key: fs.readFileSync('/etc/ssl/private/app.key')
     },
     app
   )
