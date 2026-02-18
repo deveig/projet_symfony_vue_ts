@@ -45,7 +45,7 @@ app.use('/recipe', async (req, res) => {
     res.send(response.data);
   } catch (err: any) {
     const status = err.response?.status || 500;
-    res.status(status).send(err.response?.data || err.message);
+    res.status(status).send(err.response?.data || err.stack || 'Internal Server Error');
   }
 });
 
