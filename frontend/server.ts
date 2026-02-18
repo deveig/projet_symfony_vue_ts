@@ -28,6 +28,7 @@ app.use('/recipe', async (req, res) => {
     const backendUrl = `https://nginx-back${req.originalUrl}`;
     const headers = { ...req.headers };
     delete headers.host;
+    fs.readFile('/etc/ssl/certs/app.crt', 'utf-8');
     const response = await axios({
       method: req.method as any,
       url: backendUrl,
