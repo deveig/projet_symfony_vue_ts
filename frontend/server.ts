@@ -21,7 +21,7 @@ const app = express()
 app.use('/recipe', express.raw({ type: '*/*', limit: '10mb' }));
 app.use('/recipe', async (req, res) => {
   try {
-    const backendUrl = `http://nginx-back:8080${req.originalUrl}`;
+    const backendUrl = `https://nginx-back${req.originalUrl}`;
     const headers = { ...req.headers };
     delete headers.host;
 
