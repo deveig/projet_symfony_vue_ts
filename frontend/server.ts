@@ -1,10 +1,12 @@
 import fs from 'node:fs/promises'
 import express from 'express'
+import https from 'https'
 import axios from 'axios'
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
-const port = process.env.PORT || 5173
+// const port = process.env.PORT || 5173
+const port = 443;
 const base = process.env.BASE || '/'
 
 // Cached production assets
@@ -99,6 +101,10 @@ app.use('*all', async (req, res) => {
 })
 
 // Start http server
-app.listen(port, () => {
+// app.listen(port, () => {
+https.createServer({
+  key: await fs.readFile('/etc/ssl/private/app.key'),
+  cert: await fs.readFile('/etc/ssl/certs/app.crt')
+}, app).listen(port, () => {
   console.log(`Server started at http://localhost:${port}`)
 })

@@ -21,6 +21,7 @@
     "cross-env": "^10.1.0",
     "express": "^5.2.1",
     "fs.promises": "^0.1.2",
+    "https": "^1.0.0",
     "sirv": "^3.0.2",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"

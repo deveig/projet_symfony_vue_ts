@@ -4,8 +4,80 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "07a62e73d0b2a129e8cb230a2602f1ac",
+    "content-hash": "04c78819745207873a2ea8923a654b6f",
     "packages": [
+        {
+            "name": "composer/ca-bundle",
+            "version": "1.5.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/ca-bundle.git",
+                "reference": "961a5e4056dd2e4a2eedcac7576075947c28bf63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/961a5e4056dd2e4a2eedcac7576075947c28bf63",
+                "reference": "961a5e4056dd2e4a2eedcac7576075947c28bf63",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-pcre": "*",
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^8 || ^9",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/process": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\CaBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "Lets you find a path to the system CA bundle, and includes a fallback to the Mozilla CA bundle.",
+            "keywords": [
+                "cabundle",
+                "cacert",
+                "certificate",
+                "ssl",
+                "tls"
+            ],
+            "support": {
+                "irc": "irc://irc.freenode.org/composer",
+                "issues": "https://github.com/composer/ca-bundle/issues",
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.10"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-12-08T15:06:51+00:00"
+        },
         {
             "name": "doctrine/cache",
             "version": "2.2.0",
@@ -1487,6 +1559,80 @@
                 }
             ],
             "time": "2023-06-21T08:46:11+00:00"
+        },
+        {
+            "name": "nelmio/security-bundle",
+            "version": "v3.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nelmio/NelmioSecurityBundle.git",
+                "reference": "2fafee1cdda1d5952554c44eef4c3c8566d56f40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nelmio/NelmioSecurityBundle/zipball/2fafee1cdda1d5952554c44eef4c3c8566d56f40",
+                "reference": "2fafee1cdda1d5952554c44eef4c3c8566d56f40",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "symfony/deprecation-contracts": "^2.5 || ^3",
+                "symfony/framework-bundle": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/http-kernel": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/security-core": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/security-csrf": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/security-http": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/yaml": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "ua-parser/uap-php": "^3.4.4"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpstan/phpstan-symfony": "^2.0",
+                "phpunit/phpunit": "^9.5 || ^10.1 || ^11.0",
+                "psr/cache": "^1.0 || ^2.0 || ^3.0",
+                "symfony/browser-kit": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/cache": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "symfony/phpunit-bridge": "^6.3 || ^7.0 || ^8.0",
+                "symfony/twig-bundle": "^5.4 || ^6.3 || ^7.0 || ^8.0",
+                "twig/twig": "^2.10 || ^3.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nelmio\\SecurityBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nelmio",
+                    "homepage": "http://nelm.io"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://github.com/nelmio/NelmioSecurityBundle/contributors"
+                }
+            ],
+            "description": "Extra security-related features for Symfony: signed/encrypted cookies, HTTPS/SSL/HSTS handling, cookie session storage, ...",
+            "keywords": [
+                "security"
+            ],
+            "support": {
+                "issues": "https://github.com/nelmio/NelmioSecurityBundle/issues",
+                "source": "https://github.com/nelmio/NelmioSecurityBundle/tree/v3.8.0"
+            },
+            "time": "2026-01-14T19:38:55+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -5495,16 +5641,16 @@
         },
         {
             "name": "symfony/runtime",
-            "version": "v6.3.2",
+            "version": "v6.4.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/runtime.git",
-                "reference": "d5c09493647a0c1a16e6c8da308098e840d1164f"
+                "reference": "fb3149ee85d3b639dd3e49ea9dda05656f0537e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/runtime/zipball/d5c09493647a0c1a16e6c8da308098e840d1164f",
-                "reference": "d5c09493647a0c1a16e6c8da308098e840d1164f",
+                "url": "https://api.github.com/repos/symfony/runtime/zipball/fb3149ee85d3b639dd3e49ea9dda05656f0537e3",
+                "reference": "fb3149ee85d3b639dd3e49ea9dda05656f0537e3",
                 "shasum": ""
             },
             "require": {
@@ -5516,10 +5662,10 @@
             },
             "require-dev": {
                 "composer/composer": "^1.0.2|^2.0",
-                "symfony/console": "^5.4.9|^6.0.9",
-                "symfony/dotenv": "^5.4|^6.0",
-                "symfony/http-foundation": "^5.4|^6.0",
-                "symfony/http-kernel": "^5.4|^6.0"
+                "symfony/console": "^5.4.9|^6.0.9|^7.0",
+                "symfony/dotenv": "^5.4|^6.0|^7.0",
+                "symfony/http-foundation": "^5.4|^6.0|^7.0",
+                "symfony/http-kernel": "^5.4|^6.0|^7.0"
             },
             "type": "composer-plugin",
             "extra": {
@@ -5554,7 +5700,7 @@
                 "runtime"
             ],
             "support": {
-                "source": "https://github.com/symfony/runtime/tree/v6.3.2"
+                "source": "https://github.com/symfony/runtime/tree/v6.4.30"
             },
             "funding": [
                 {
@@ -5566,11 +5712,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-16T17:05:46+00:00"
+            "time": "2025-12-05T10:55:13+00:00"
         },
         {
             "name": "symfony/security-bundle",
@@ -7165,6 +7315,69 @@
                 }
             ],
             "time": "2023-08-28T11:09:02+00:00"
+        },
+        {
+            "name": "ua-parser/uap-php",
+            "version": "v3.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ua-parser/uap-php.git",
+                "reference": "f44bdd1b38198801cf60b0681d2d842980e47af5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ua-parser/uap-php/zipball/f44bdd1b38198801cf60b0681d2d842980e47af5",
+                "reference": "f44bdd1b38198801cf60b0681d2d842980e47af5",
+                "shasum": ""
+            },
+            "require": {
+                "composer/ca-bundle": "^1.1",
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.33",
+                "phpunit/phpunit": "^8 || ^9",
+                "symfony/console": "^3.4 || ^4.2 || ^4.3 || ^5.0",
+                "symfony/filesystem": "^3.4 || ^4.2 ||  ^4.3 || ^5.0",
+                "symfony/finder": "^3.4 || ^4.2 || ^4.3 || ^5.0",
+                "symfony/yaml": "^3.4 || ^4.2 || ^4.3 || ^5.0",
+                "vimeo/psalm": "^3.12"
+            },
+            "suggest": {
+                "symfony/console": "Required for CLI usage - ^3.4 || ^4.3 || ^5.0",
+                "symfony/filesystem": "Required for CLI usage - ^3.4 || ^4.3 || ^5.0",
+                "symfony/finder": "Required for CLI usage - ^3.4 || ^4.3 || ^5.0",
+                "symfony/yaml": "Required for CLI usage - ^3.4 || ^4.3 || ^5.0"
+            },
+            "bin": [
+                "bin/uaparser"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "UAParser\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Olsen",
+                    "email": "dmolsen@gmail.com"
+                },
+                {
+                    "name": "Lars Strojny",
+                    "email": "lars@strojny.net"
+                }
+            ],
+            "description": "A multi-language port of Browserscope's user agent parser.",
+            "support": {
+                "issues": "https://github.com/ua-parser/uap-php/issues",
+                "source": "https://github.com/ua-parser/uap-php/tree/v3.10.0"
+            },
+            "time": "2025-07-17T15:43:24+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -9720,7 +9933,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -9728,6 +9941,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
