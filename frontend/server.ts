@@ -105,6 +105,14 @@ app.use('*all', async (req, res) => {
 
 // Start http server
 // app.listen(port, () => {
-  https.createServer(app).listen(port, () => {
-  console.log(`Server started at https://localhost:${port}`);
-});
+https
+  .createServer(
+    {
+      cert: await fs.readFile('/etc/ssl/certs/app.crt', 'utf-8'),
+      key: await fs.readFile('/etc/ssl/private/app.key', 'utf-8')
+    },
+    app
+  )
+  .listen(port, () => {
+    console.log(`Server started at https://localhost:${port}`);
+  });
