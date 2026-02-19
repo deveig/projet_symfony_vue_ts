@@ -6,8 +6,8 @@ import fs from 'fs/promises';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production';
-// const port = process.env.PORT || 5173;
-const port = 443;
+const port = process.env.PORT || 5173;
+// const port = 443;
 const base = process.env.BASE || '/';
 
 // Cached production assets
@@ -20,7 +20,7 @@ const app = express();
 app.use('/recipe', express.raw({ type: '*/*', limit: '10mb' }));
 app.use('/recipe', async (req, res) => {
   try {
-    const backendUrl = `https://nginx-back${req.originalUrl}`;
+    const backendUrl = `http://nginx-back:8080${req.originalUrl}`;
     const headers = { ...req.headers };
     delete headers.host;
     const response = await axios({
@@ -99,15 +99,14 @@ app.use('*all', async (req, res) => {
 });
 
 // Start http server
-// app.listen(port, () => {
-https
-  .createServer(
-    {
-      cert: nodeFs.readFileSync('/etc/ssl/certs/app.crt'),
-      key: nodeFs.readFileSync('/etc/ssl/private/app.key')
-    },
-    app
-  )
-  .listen(port, () => {
+// https
+//   .createServer(
+//     {
+//       cert: nodeFs.readFileSync('/etc/ssl/certs/app.crt'),
+//       key: nodeFs.readFileSync('/etc/ssl/private/app.key')
+//     },
+//     app
+//   )
+  app.listen(port, () => {
     console.log(`Server started at https://localhost:${port}`);
   });
