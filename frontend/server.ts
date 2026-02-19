@@ -1,7 +1,8 @@
-import fs from 'node:fs';
+import nodeFs from 'node:fs';
 import express from 'express';
 import https from 'https';
 import axios from 'axios';
+import fs from 'fs/promises';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production';
@@ -102,8 +103,8 @@ app.use('*all', async (req, res) => {
 https
   .createServer(
     {
-      cert: fs.readFileSync('/etc/ssl/certs/app.crt'),
-      key: fs.readFileSync('/etc/ssl/private/app.key')
+      cert: nodeFs.readFileSync('/etc/ssl/certs/app.crt'),
+      key: nodeFs.readFileSync('/etc/ssl/private/app.key')
     },
     app
   )
