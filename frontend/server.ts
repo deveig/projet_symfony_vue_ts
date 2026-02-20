@@ -66,7 +66,7 @@ if (!isProduction) {
 }
 
 // Serve HTML
-app.use('*all', async (req, res) => {
+app.use('/recipe-symfony-vue', async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, '');
 
