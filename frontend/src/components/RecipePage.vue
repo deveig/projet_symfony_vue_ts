@@ -171,7 +171,7 @@ export default {
 <template>
   <div v-if="loader" class="loader">Please wait...</div>
   <header v-if="!loader">
-    <img class="picture" src="../assets/salad.jpg" alt="Salad" />
+    <img class="picture" src="/assets/salad.jpg" alt="Salad" />
     <div>
         <h1 class="main-title">Salad</h1>
         <p class="description">Delicious flavored salad !</p>
