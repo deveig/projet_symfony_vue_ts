@@ -17,8 +17,8 @@ const templateHtml = isProduction ? await fs.readFile('./dist/client/index.html'
 const app = express();
 
 // Proxy /recipe requests to the Symfony backend, forwarding raw body and headers.
-app.use('/recipe', express.raw({ type: '*/*', limit: '10mb' }));
-app.use('/recipe', async (req, res) => {
+app.use('/recipe-symfony-vue/recipe', express.raw({ type: '*/*', limit: '10mb' }));
+app.use('/recipe-symfony-vue/recipe', async (req, res) => {
   try {
     const backendUrl = `http://nginx-back:8080${req.originalUrl}`;
     const headers = { ...req.headers };

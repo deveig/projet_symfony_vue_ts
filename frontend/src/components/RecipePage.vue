@@ -15,7 +15,7 @@ export default {
       }>,
       error: false,
       errorMessage: '',
-      url: '/recipe',
+      url: '/recipe-symfony-vue/recipe',
       name: '',
       quantity: '',
       metric: ''
