@@ -20,7 +20,7 @@ const app = express();
 app.use('/recipe-symfony-vue/recipe', express.raw({ type: '*/*', limit: '10mb' }));
 app.use('/recipe-symfony-vue/recipe', async (req, res) => {
   try {
-    const backendUrl = `http://nginx-back:8080${req.originalUrl}`;
+    const backendUrl = 'http://nginx-back:8080/recipe';
     const headers = { ...req.headers };
     delete headers.host;
     const response = await axios({
