@@ -1,5 +1,5 @@
-// import '/assets/css/normalize.css';
-// import '/assets/css/main.css';
+import './assets/normalize.css';
+import './assets/main.css';
 import { type App } from 'vue';
 // import RecipePage from './components/RecipePage.vue';
 
