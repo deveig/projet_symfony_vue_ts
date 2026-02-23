@@ -13,13 +13,10 @@
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
-/phpunit.xml
+/phpunit.*.xml
 .phpunit.result.cache
-###< phpunit/phpunit ###
+.phpunit.cache
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
 ###< symfony/phpunit-bridge ###
 
 ###> composer ###
