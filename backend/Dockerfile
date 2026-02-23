@@ -1,4 +1,4 @@
-FROM php:8.3.30RC1-fpm-alpine3.23
+FROM php:8.5.3-fpm-alpine3.23
 ARG DB_APP_SECRET
 ARG DB_URL
 ARG DB_MESSENGER
