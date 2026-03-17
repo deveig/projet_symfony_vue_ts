@@ -35,11 +35,11 @@ app.use('/recipe-symfony-vue/recipe', async (req, res) => {
 
     // Forward status, headers and body
     res.status(response.status);
-    // Object.entries(response.headers).forEach(([k, v]) => {
-    //   try {
-    //     res.setHeader(k, v as string);
-    //   } catch {}
-    // });
+    Object.entries(response.headers).forEach(([k, v]) => {
+      try {
+        res.setHeader(k, v as string);
+      } catch {}
+    });
     res.send(response.data);
   } catch (err: any) {
     const status = err.response?.status || 500;
@@ -49,7 +49,7 @@ app.use('/recipe-symfony-vue/recipe', async (req, res) => {
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
-let vite;
+let vite: any;
 if (!isProduction) {
   const { createServer } = await import('vite');
   vite = await createServer({
@@ -91,7 +91,7 @@ app.use('/recipe-symfony-vue', async (req, res) => {
       .replace(`<!--app-html-->`, rendered.html ?? '');
 
     res.status(200).set({ 'Content-Type': 'text/html' }).send(html);
-  } catch (e) {
+  } catch (e: any) {
     vite?.ssrFixStacktrace(e);
     console.log(e.stack);
     res.status(500).end(e.stack);
@@ -107,6 +107,6 @@ app.use('/recipe-symfony-vue', async (req, res) => {
 //     },
 //     app
 //   )
-  app.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
-  });
+app.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`);
+});

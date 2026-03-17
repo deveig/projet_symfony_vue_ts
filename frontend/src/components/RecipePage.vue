@@ -7,13 +7,23 @@ export default {
   data() {
     return {
       loader: true,
+      user: null as { id: Number; userName: string; password: string } | null,
+      username: '',
       ingredientsList: [] as Array<{
         id: number;
         ingredient: string;
         quantity: number;
         unit: string;
+        user: {
+          id: number;
+          userName: string;
+          password: string;
+        };
       }>,
-      error: false,
+      errorIngredient: false,
+      errorIngredientMessage: '',
+      errorUser: false,
+      errorUserMessage: '',rror: false,
       errorMessage: '',
       url: '/recipe-symfony-vue/recipe',
       name: '',
@@ -23,136 +33,259 @@ export default {
   },
 
   methods: {
+    async saveUser(username: string) {
+      let user = new FormData();
+      user.append('username', username);
+      let response = await axios({
+        method: 'post',
+        url: `${this.url}/user`,
+        data: user,
+        withCredentials: true
+      });
+      if (response.status === 201) {
+        return response.data;
+      }
+    },
+    async validateUser() {
+      try {
+        let isNumber = new RegExp(/\d+/);
+        let newUserName: string = this.username;
+        // Checks content of field.
+        if (newUserName !== '' && newUserName.length <= 25 && !isNumber.test(newUserName)) {
+          this.loader = true;
+          this.errorUserMessage = '';
+          this.errorUser = false;
+          let message = await this.saveUser(newUserName);
+          if (message) {
+            this.$emit('saveDataOfUser');
+            this.getDataOfUser();
+          }
+        } else {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
+        }
+      } catch (error) {
+        let axiosError = error as AxiosError;
+        let axiosErrorResponseMessage = axiosError!.response!.data as {
+          message: string;
+        };
+        if (axiosErrorResponseMessage.message === 'Invalid data.') {
+          this.errorUserMessage = 'Invalid data.';
+          this.errorUser = true;
+          this.loader = false;
+        } else {
+          this.errorUserMessage = 'Internal Server Error, please, retry your demand.';
+          this.errorUser = true;
+          this.loader = false;
+        }
+      }
+    },
+    async getUser() {
+      let response = await axios({
+        method: 'get',
+        url: `${this.url}/user`,
+        withCredentials: true
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    },
+    async getDataOfUser() {
+      try {
+        const user = await this.getUser();
+        if (user != null && user.id) { 
+          this.user = user;
+          this.username = user.userName;
+          this.loader = false;
+          this.getIngredients();
+        } else {
+          this.loader = false;
+        }
+      } catch (error) {
+        let axiosError = error as AxiosError<{ message: string }, void>;
+        let axiosErrorResponseMessage = axiosError.response?.data.message;
+        if (axiosErrorResponseMessage === 'No user') {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
+          this.loader = false;
+        } else {
+          this.errorUserMessage = 'Internal Server Error, please, retry your demand.';
+          this.errorUser = true;
+          this.loader = false;
+        }
+      }
+    },
     async get() {
-      const response = await axios({ method: 'get', url: this.url });
+      let response = await axios({ method: 'get', url: this.url, withCredentials: true });
       if (response.status === 200) {
         return response.data;
       }
     },
     async getIngredients() {
       try {
-        const ingredients = await this.get();
-        if (ingredients) {
-          this.ingredientsList = ingredients;
+        if (this.user != null) {
+          let ingredients = await this.get();
+          if (ingredients) {
+            this.ingredientsList = ingredients;
+            this.loader = false;
+          } else {
+            this.errorIngredientMessage = 'Internal Server Error, please, retry your demand.';
+            this.errorIngredient = true;
+            this.loader = false;
+          }
+        } else {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
           this.loader = false;
         }
       } catch (error) {
-        this.errorMessage = 'Internal Server Error, please, retry your demand.';
-        this.error = true;
-        this.loader = false;
+        let axiosError = error as AxiosError<{ message: string }, void>;
+        let axiosErrorResponseMessage = axiosError.response?.data.message;
+        if (axiosErrorResponseMessage === 'No user') {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
+          this.loader = false;
+        } else {
+          this.errorIngredientMessage = 'Internal Server Error, please, retry your demand.';
+          this.errorIngredient = true;
+          this.loader = false;
+        }
       }
     },
     async save(name: string, quantity: string, metric: string) {
-      const ingredient = new FormData();
+      let ingredient = new FormData();
       ingredient.append('ingredient', name);
       ingredient.append('quantity', quantity);
       ingredient.append('unit', metric);
-      const response = await axios({
+      let response = await axios({
         method: 'post',
         url: this.url,
-        data: ingredient
+        data: ingredient,
+        withCredentials: true
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         return response.data;
       }
     },
     async validateData() {
       try {
-        const isNumber = new RegExp(/\d+/);
-        const isString = new RegExp(/\D+/);
-        const isNotEqualToZero = new RegExp(/[^0]/);
-        const isNegativeNumber = new RegExp(/-\d+/);
-        const newIngredientName = this.name;
-        const newIngredientQuantity = this.quantity;
-        const newIngredientMetric = this.metric;
-        // Checks content of each field.
-        if (
-          newIngredientName !== '' &&
-          newIngredientQuantity !== '' &&
-          newIngredientMetric !== ''
-        ) {
-          if (newIngredientName.length <= 25 && !isNumber.test(newIngredientName)) {
-            if (
-              !isString.test(newIngredientQuantity) &&
-              isNotEqualToZero.test(newIngredientQuantity) &&
-              !isNegativeNumber.test(newIngredientQuantity)
-            ) {
-              if (newIngredientMetric.length <= 10 && !isNumber.test(newIngredientMetric)) {
-                this.loader = true;
-                this.errorMessage = '';
-                this.error = false;
-                this.name = '';
-                this.quantity = '';
-                this.metric = '';
-                const message = await this.save(
-                  newIngredientName,
-                  newIngredientQuantity,
-                  newIngredientMetric
-                );
-                if (message) {
-                  this.$emit('saveData');
-                  this.getIngredients();
+        if (this.user != null) {
+          let isNumber = new RegExp(/\d+/);
+          let isString = new RegExp(/\D+/);
+          let isNotEqualToZero = new RegExp(/[^0]/);
+          let isNegativeNumber = new RegExp(/-\d+/);
+          let newIngredientName = this.name;
+          let newIngredientQuantity = this.quantity;
+          let newIngredientMetric = this.metric;
+          // Checks content of each field.
+          if (
+            newIngredientName !== '' &&
+            newIngredientQuantity !== '' &&
+            newIngredientMetric !== ''
+          ) {
+            if (newIngredientName.length <= 25 && !isNumber.test(newIngredientName)) {
+              if (
+                !isString.test(newIngredientQuantity) &&
+                isNotEqualToZero.test(newIngredientQuantity) &&
+                !isNegativeNumber.test(newIngredientQuantity)
+              ) {
+                if (newIngredientMetric.length <= 10 && !isNumber.test(newIngredientMetric)) {
+                  this.loader = true;
+                  this.errorIngredientMessage = '';
+                  this.errorIngredient = false;
+                  let message = await this.save(
+                    newIngredientName,
+                    newIngredientQuantity,
+                    newIngredientMetric
+                  );
+                  if (message) {
+                    this.$emit('saveData');
+                    this.name = "";
+                    this.quantity = "";
+                    this.metric = "";
+                    this.getIngredients();
+                  }
+                } else {
+                  this.errorIngredientMessage = 'Metric is a short word.';
+                  this.errorIngredient = true;
                 }
               } else {
-                this.errorMessage = 'Metric is a short word.';
-                this.error = true;
+                this.errorIngredientMessage = 'Quantity is a positive number.';
+                this.errorIngredient = true;
               }
             } else {
-              this.errorMessage = 'Quantity is a positive number.';
-              this.error = true;
+              this.errorIngredientMessage = 'Name is a short word.';
+              this.errorIngredient = true;
             }
           } else {
-            this.errorMessage = 'Name is a short word.';
-            this.error = true;
+            this.errorIngredientMessage = 'All fields are required.';
+            this.errorIngredient = true;
           }
         } else {
-          this.errorMessage = 'All fields are required.';
-          this.error = true;
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
         }
       } catch (error) {
-        const axiosError = error as AxiosError;
-        const axiosErrorResponseMessage = axiosError!.response!.data! as {
+        let axiosError = error as AxiosError;
+        let axiosErrorResponseMessage = axiosError!.response!.data as {
           message: string;
         };
         if (axiosErrorResponseMessage.message === 'Invalid data.') {
-          this.errorMessage = 'Invalid data.';
-          this.error = true;
+          this.errorIngredientMessage = 'Invalid data.';
+          this.errorIngredient = true;
+          this.loader = false;
+        } else if (axiosErrorResponseMessage.message === 'No user') {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
           this.loader = false;
         } else {
-          this.errorMessage = 'Internal Server Error, please, retry your demand.';
-          this.error = true;
+          this.errorIngredientMessage = 'Internal Server Error, please, retry your demand.';
+          this.errorIngredient = true;
           this.loader = false;
         }
       }
     },
     async delete() {
-      const response = await axios({ method: 'get', url: `${this.url}/delete` });
+      let response = await axios({
+        method: 'get',
+        url: `${this.url}/delete`,
+        withCredentials: true
+      });
       if (response.status === 200) {
         return response.data;
       }
     },
     async deleteData() {
       try {
-        this.loader = true;
-        this.errorMessage = '';
-        this.error = false;
-        const message = await this.delete();
-        if (message) {
-          this.$emit('removeData');
-          this.getIngredients();
+        if (this.user != null) {
+          this.loader = true;
+          this.errorIngredientMessage = '';
+          this.errorIngredient = false;
+          let message = await this.delete();
+          if (message) {
+            this.$emit('removeData');
+            this.getIngredients();
+          }
+        } else {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
         }
       } catch (error) {
-        const axiosError = error as AxiosError;
-        const axiosErrorResponseMessage = axiosError!.response!.data! as {
+        let axiosError = error as AxiosError;
+        const axiosErrorResponseMessage = axiosError!.response!.data as {
           message: string;
         };
         if (axiosErrorResponseMessage.message === 'No ingredient to remove.') {
-          this.errorMessage = 'No ingredient to remove.';
-          this.error = true;
+          this.errorIngredientMessage = 'No ingredient to remove.';
+          this.errorIngredient = true;
+          this.loader = false;
+        } else if (axiosErrorResponseMessage.message === 'No user') {
+          this.errorUserMessage = 'Enter your name!';
+          this.errorUser = true;
           this.loader = false;
         } else {
-          this.errorMessage = 'Internal Server Error, please, retry your demand.';
-          this.error = true;
+          this.errorIngredientMessage = 'Internal Server Error, please, retry your demand.';
+          this.errorIngredient = true;
           this.loader = false;
         }
       }
@@ -161,9 +294,8 @@ export default {
   components: {
     ListIngredient
   },
-
   mounted() {
-    this.getIngredients();
+    this.getDataOfUser();
   }
 };
 </script>
@@ -173,8 +305,43 @@ export default {
   <header v-if="!loader">
     <img class="picture" src="../assets/salad.jpg" alt="Salad" />
     <div>
-        <h1 class="main-title">Salad</h1>
-        <p class="description">Delicious flavored salad !</p>
+      <h1 class="main-title">
+        Salad of
+        <form
+          v-if="user == null"
+          @submit.prevent="validateUser"
+          method="post"
+          action=""
+          class="form-title"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th class="item-datas">
+                  <label for="username">Your name</label>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="item-datas">
+                  <input id="username" name="username" v-model="username" />
+                </td>
+                <td>
+                  <button type="submit" class="more-item" name="plus_name" value="plus_name">
+                    +
+                  </button>
+                </td>
+              </tr>
+              <tr class="warning" v-if="errorUser">
+                <td>{{ errorUserMessage }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+        <span v-else>{{ user.userName }}</span>
+      </h1>
+      <p class="description">Delicious flavored salad !</p>
     </div>
   </header>
   <main v-if="!loader">
@@ -215,7 +382,9 @@ export default {
       <h2 class="subtitle">Ingredients</h2>
       <form method="post" action="" @submit.prevent="validateData">
         <div class="item-handler">
-          <span>Servings: <span>{{ ingredientsList.length }}</span></span>
+          <span
+            >Servings: <span>{{ ingredientsList.length }}</span></span
+          >
           <div>
             <button type="submit" class="more-item" name="plus" value="plus">+</button>
             <button type="button" class="less-item" name="minus" value="minus" @click="deleteData">
@@ -247,8 +416,8 @@ export default {
                 <input id="metric" name="metric" required v-model="metric" />
               </td>
             </tr>
-            <tr class="warning" v-if="error">
-              <td colspan="4">{{ errorMessage }}</td>
+            <tr class="warning" v-if="errorIngredient">
+              <td colspan="4">{{ errorIngredientMessage }}</td>
             </tr>
           </thead>
           <tbody>
