@@ -306,7 +306,6 @@ export default {
     <img class="picture" src="../assets/salad.jpg" alt="Salad" />
     <div>
       <h1 class="main-title">
-        Salad of
         <form
           v-if="user == null"
           @submit.prevent="validateUser"
@@ -340,6 +339,7 @@ export default {
           </table>
         </form>
         <span v-else>{{ user.userName }}</span>
+        's salad
       </h1>
       <p class="description">Delicious flavored salad !</p>
     </div>
